@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { package as package_icon, user, mail, phone, message_square } from "lucide-react";
+import { Package, User, Mail, Phone, MessageSquare } from "lucide-react";
 
 const ContactPage = () => {
   const [name, setName] = useState('');
@@ -67,7 +67,7 @@ const ContactPage = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <user className="h-5 w-5 text-gym-gray" />
+                        <User className="h-5 w-5 text-gym-gray" />
                       </div>
                       <Input 
                         id="name"
@@ -87,7 +87,7 @@ const ContactPage = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <mail className="h-5 w-5 text-gym-gray" />
+                        <Mail className="h-5 w-5 text-gym-gray" />
                       </div>
                       <Input 
                         id="email"
@@ -109,7 +109,7 @@ const ContactPage = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <phone className="h-5 w-5 text-gym-gray" />
+                        <Phone className="h-5 w-5 text-gym-gray" />
                       </div>
                       <Input 
                         id="phone"
@@ -147,7 +147,7 @@ const ContactPage = () => {
                   </label>
                   <div className="relative">
                     <div className="absolute top-3 left-3 pointer-events-none">
-                      <message_square className="h-5 w-5 text-gym-gray" />
+                      <MessageSquare className="h-5 w-5 text-gym-gray" />
                     </div>
                     <Textarea 
                       id="message"
