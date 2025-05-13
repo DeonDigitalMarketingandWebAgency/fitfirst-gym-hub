@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/components/ui/use-toast';
 import MainLayout from '@/components/layout/MainLayout';
+import { register, UserRegistration } from '@/services/authService';
 
 const Register = () => {
   const [fullName, setFullName] = useState('');
@@ -21,7 +22,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (password !== confirmPassword) {
@@ -44,15 +45,31 @@ const Register = () => {
     
     setIsLoading(true);
     
-    // In a real app, this would be an API call to register the user
-    setTimeout(() => {
+    try {
+      const userData: UserRegistration = {
+        fullName,
+        email,
+        phone,
+        password
+      };
+      
+      await register(userData);
+      
       toast({
         title: "Registration Successful",
         description: "Your account has been created successfully!",
       });
+      
       navigate('/login');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Registration Failed",
+        description: error instanceof Error ? error.message : "There was an error creating your account.",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (

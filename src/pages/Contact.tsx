@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import { Input } from "@/components/ui/input";
@@ -8,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Package, User, Mail, Phone, MessageSquare } from "lucide-react";
+import MapComponent from "@/components/map/MapComponent";
 
 const ContactPage = () => {
   const [name, setName] = useState('');
@@ -54,7 +54,98 @@ const ContactPage = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto mb-16">
+          {/* Contact Information - Moved to the top */}
+          <div>
+            <h2 className="text-2xl font-bold text-gym-blue mb-6">Contact Information</h2>
+            
+            <div className="grid gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-start">
+                    <div className="mr-4 mt-1">
+                      <div className="p-2 bg-gym-blue/10 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gym-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                          <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gym-blue mb-1">Our Location</h3>
+                      <p className="text-gym-gray">
+                        123 Fitness Avenue<br />
+                        Cityville, State 12345<br />
+                        United States
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-start">
+                    <div className="mr-4 mt-1">
+                      <div className="p-2 bg-gym-blue/10 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gym-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gym-blue mb-1">Phone Numbers</h3>
+                      <p className="text-gym-gray mb-1">Main: (123) 456-7890</p>
+                      <p className="text-gym-gray">Support: (123) 456-7891</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-start">
+                    <div className="mr-4 mt-1">
+                      <div className="p-2 bg-gym-blue/10 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gym-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="4" width="20" height="16" rx="2"/>
+                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gym-blue mb-1">Email Addresses</h3>
+                      <p className="text-gym-gray mb-1">Info: info@fitnessfirst.com</p>
+                      <p className="text-gym-gray">Support: support@fitnessfirst.com</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-start">
+                    <div className="mr-4 mt-1">
+                      <div className="p-2 bg-gym-blue/10 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gym-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gym-blue mb-1">Business Hours</h3>
+                      <p className="text-gym-gray mb-1">Monday - Friday: 5:00 AM - 10:00 PM</p>
+                      <p className="text-gym-gray mb-1">Saturday: 7:00 AM - 8:00 PM</p>
+                      <p className="text-gym-gray">Sunday: 8:00 AM - 6:00 PM</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+          
+          {/* Contact Form */}
           <div>
             <h2 className="text-2xl font-bold text-gym-blue mb-6">Get in Touch</h2>
             
@@ -170,104 +261,12 @@ const ContactPage = () => {
               </div>
             </form>
           </div>
-          
-          <div>
-            <h2 className="text-2xl font-bold text-gym-blue mb-6">Contact Information</h2>
-            
-            <div className="grid gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-start">
-                    <div className="mr-4 mt-1">
-                      <div className="p-2 bg-gym-blue/10 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gym-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                          <circle cx="12" cy="10" r="3"/>
-                        </svg>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gym-blue mb-1">Our Location</h3>
-                      <p className="text-gym-gray">
-                        123 Fitness Avenue<br />
-                        Cityville, State 12345<br />
-                        United States
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-start">
-                    <div className="mr-4 mt-1">
-                      <div className="p-2 bg-gym-blue/10 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gym-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gym-blue mb-1">Phone Numbers</h3>
-                      <p className="text-gym-gray mb-1">Main: (123) 456-7890</p>
-                      <p className="text-gym-gray">Support: (123) 456-7891</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-start">
-                    <div className="mr-4 mt-1">
-                      <div className="p-2 bg-gym-blue/10 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gym-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="2" y="4" width="20" height="16" rx="2"/>
-                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                        </svg>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gym-blue mb-1">Email Addresses</h3>
-                      <p className="text-gym-gray mb-1">Info: info@fitnessfirst.com</p>
-                      <p className="text-gym-gray">Support: support@fitnessfirst.com</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-start">
-                    <div className="mr-4 mt-1">
-                      <div className="p-2 bg-gym-blue/10 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gym-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="10"/>
-                          <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gym-blue mb-1">Business Hours</h3>
-                      <p className="text-gym-gray mb-1">Monday - Friday: 5:00 AM - 10:00 PM</p>
-                      <p className="text-gym-gray mb-1">Saturday: 7:00 AM - 8:00 PM</p>
-                      <p className="text-gym-gray">Sunday: 8:00 AM - 6:00 PM</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
         </div>
 
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-gym-blue mb-6 text-center">Find Us</h2>
-          <div className="h-96 bg-gray-200 rounded-lg overflow-hidden">
-            {/* In a real implementation, this would be a Google Maps embed */}
-            <div className="w-full h-full flex items-center justify-center bg-gray-100">
-              <p className="text-gym-gray">Map placeholder - Google Maps would be embedded here</p>
-            </div>
+          <div className="h-96 rounded-lg overflow-hidden">
+            <MapComponent />
           </div>
         </div>
       </div>

@@ -1,79 +1,84 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Check, Badge } from "lucide-react";
 import { Link } from "react-router-dom";
 import GymCalculator from "@/components/calculator/GymCalculator";
 
 const packages = [
   {
     id: 1,
-    name: "Basic",
-    price: 29.99,
-    duration: "monthly",
+    name: "Basic Annual",
+    price: 359.99,
     description: "Perfect for beginners",
     features: [
-      "Access to gym equipment",
+      "Access to gym equipment during off-peak hours",
       "Locker room access",
-      "2 group classes per month",
-      "Fitness assessment",
+      "24 group classes per year",
+      "Fitness assessment twice a year",
+      "Fitness app access",
+      "One free guest pass per month"
     ],
     popular: false,
     color: "border-gray-200",
-    link: "/packages/monthly"
+    savings: "Save $120 compared to monthly"
   },
   {
     id: 2,
-    name: "Premium",
-    price: 49.99,
-    duration: "monthly",
-    description: "Our most popular package",
+    name: "Standard Annual",
+    price: 559.99,
+    description: "Our most popular annual plan",
     features: [
-      "Full access to gym equipment",
+      "24/7 access to gym equipment",
+      "Locker room access",
       "Unlimited group classes",
-      "1 personal training session per month",
+      "Quarterly fitness assessment",
       "Nutrition consultation",
-      "Access to swimming pool",
+      "Fitness app access with premium features",
       "Free parking",
+      "Two free guest passes per month",
+      "Free gym bag and water bottle"
     ],
     popular: true,
     color: "border-gym-orange",
-    link: "/packages/quarterly"
+    savings: "Save $160 compared to monthly"
   },
   {
     id: 3,
-    name: "Ultimate",
-    price: 89.99,
-    duration: "monthly",
+    name: "Premium Annual",
+    price: 899.99,
     description: "For serious fitness enthusiasts",
     features: [
-      "24/7 gym access",
+      "24/7 access to gym equipment and facilities",
       "Unlimited group classes",
-      "4 personal training sessions per month",
-      "Nutrition and meal planning",
-      "Access to all facilities",
+      "24 personal training sessions",
+      "Nutrition consultation and meal planning",
+      "Premium locker with towel service",
       "Free parking",
-      "Guest passes (2 per month)",
+      "Guest passes (unlimited)",
       "Access to premium app features",
+      "Monthly body composition analysis",
+      "Exclusive access to special events",
+      "Priority booking for classes",
+      "Annual fitness retreat"
     ],
     popular: false,
     color: "border-gym-blue",
-    link: "/packages/annual"
-  },
+    savings: "Save $180 compared to monthly"
+  }
 ];
 
-const PackagesPage = () => {
+const AnnualPackages = () => {
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="text-center mb-16">
           <h1 className="text-3xl md:text-5xl font-bold text-gym-blue mb-4">
-            Membership Packages
+            Annual Membership Packages
           </h1>
           <p className="text-gym-gray max-w-2xl mx-auto text-lg">
-            Choose the perfect membership package that fits your fitness goals and budget.
+            Get the best value with our annual membership plans. Commit to your fitness journey and save big!
           </p>
         </div>
 
@@ -84,10 +89,8 @@ const PackagesPage = () => {
               className={`relative overflow-hidden transition-all hover:shadow-lg ${pkg.popular ? 'border-2 border-gym-orange' : 'border border-gray-200'}`}
             >
               {pkg.popular && (
-                <div className="absolute top-0 right-0">
-                  <Badge className="bg-gym-orange text-white m-2">
-                    Most Popular
-                  </Badge>
+                <div className="absolute top-0 right-0 bg-gym-orange text-white px-3 py-1 text-xs font-semibold">
+                  BEST VALUE
                 </div>
               )}
               <CardHeader className={`bg-gray-50 border-b ${pkg.color}`}>
@@ -99,7 +102,10 @@ const PackagesPage = () => {
                 </CardDescription>
                 <div className="text-center mt-4">
                   <span className="text-4xl font-bold text-gym-blue">${pkg.price}</span>
-                  <span className="text-gym-gray ml-1">/{pkg.duration}</span>
+                  <span className="text-gym-gray ml-1">/year</span>
+                </div>
+                <div className="text-center mt-2">
+                  <span className="text-sm text-green-600 font-medium">{pkg.savings}</span>
                 </div>
               </CardHeader>
               <CardContent className="pt-6">
@@ -113,10 +119,9 @@ const PackagesPage = () => {
                 </ul>
                 <div className="mt-8">
                   <Button 
-                    asChild
                     className={`w-full ${pkg.popular ? 'bg-gym-orange hover:bg-gym-orange/90' : 'bg-gym-blue hover:bg-gym-blue/90'}`}
                   >
-                    <Link to={pkg.link}>Learn More</Link>
+                    Choose Plan
                   </Button>
                 </div>
               </CardContent>
@@ -124,53 +129,40 @@ const PackagesPage = () => {
           ))}
         </div>
 
-        <div className="mt-16 max-w-4xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-gym-blue mb-6">
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold text-center text-gym-blue mb-8">
             Fitness Calculator
           </h2>
-          <GymCalculator />
+          <div className="max-w-3xl mx-auto">
+            <GymCalculator />
+          </div>
         </div>
-
+        
         <div className="mt-16 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gym-blue mb-4">
-            Membership Options
+          <h2 className="text-2xl font-bold text-gym-blue mb-4">
+            Looking for a different commitment period?
           </h2>
           <p className="text-gym-gray max-w-2xl mx-auto mb-8">
-            Explore all our membership packages to find the perfect fit for you.
+            Check out our other membership options to find what works best for you.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild className="bg-gym-blue hover:bg-gym-blue/90">
+            <Button asChild variant="outline" className="border-gym-blue text-gym-blue hover:bg-gym-blue hover:text-white">
               <Link to="/packages/monthly">Monthly Packages</Link>
             </Button>
-            <Button asChild className="bg-gym-blue hover:bg-gym-blue/90">
+            <Button asChild variant="outline" className="border-gym-blue text-gym-blue hover:bg-gym-blue hover:text-white">
               <Link to="/packages/quarterly">Quarterly Packages</Link>
             </Button>
-            <Button asChild className="bg-gym-blue hover:bg-gym-blue/90">
+            <Button asChild variant="outline" className="border-gym-blue text-gym-blue hover:bg-gym-blue hover:text-white">
               <Link to="/packages/half-yearly">Half-Yearly Packages</Link>
             </Button>
-            <Button asChild className="bg-gym-blue hover:bg-gym-blue/90">
-              <Link to="/packages/annual">Annual Packages</Link>
-            </Button>
-            <Button asChild className="bg-gym-orange hover:bg-gym-orange/90">
+            <Button asChild variant="outline" className="border-gym-blue text-gym-blue hover:bg-gym-blue hover:text-white">
               <Link to="/packages/personal-training">Personal Training</Link>
             </Button>
           </div>
-        </div>
-
-        <div className="mt-16 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gym-blue mb-4">
-            Corporate Memberships
-          </h2>
-          <p className="text-gym-gray max-w-2xl mx-auto mb-8">
-            We offer special rates for corporate groups. Contact us to learn more about our corporate packages.
-          </p>
-          <Button asChild variant="outline" className="border-gym-blue text-gym-blue hover:bg-gym-blue hover:text-white">
-            <Link to="/contact">Contact for Corporate Rates</Link>
-          </Button>
         </div>
       </div>
     </MainLayout>
   );
 };
 
-export default PackagesPage;
+export default AnnualPackages;

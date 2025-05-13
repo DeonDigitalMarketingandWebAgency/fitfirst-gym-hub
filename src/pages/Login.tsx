@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/components/ui/use-toast';
 import MainLayout from '@/components/layout/MainLayout';
+import { login, LoginCredentials } from '@/services/authService';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,28 +19,29 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // In a real app, this would be an API call to authenticate the user
-    setTimeout(() => {
-      // Demo login - in a real app, this would be proper authentication
-      if (email === 'demo@example.com' && password === 'password') {
-        toast({
-          title: "Login Successful",
-          description: "Welcome back to Fitness First GYM!",
-        });
-        navigate('/dashboard');
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Login Failed",
-          description: "Invalid email or password. Please try again.",
-        });
-      }
+    try {
+      const credentials: LoginCredentials = { email, password };
+      const user = await login(credentials);
+      
+      toast({
+        title: "Login Successful",
+        description: `Welcome back, ${user.fullName}!`,
+      });
+      
+      navigate('/dashboard');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: error instanceof Error ? error.message : "Invalid email or password. Please try again.",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -96,6 +98,13 @@ const Login = () => {
                 <Button type="submit" className="bg-gym-orange hover:bg-gym-orange/90" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
+                
+                {/* Demo Account Info */}
+                <div className="text-center text-sm text-gym-gray mt-2 p-2 bg-gray-50 rounded-md">
+                  <p>Demo Account:</p>
+                  <p>Email: demo@example.com</p>
+                  <p>Password: password</p>
+                </div>
               </div>
             </form>
           </CardContent>

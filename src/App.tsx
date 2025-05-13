@@ -17,6 +17,13 @@ import Trainers from "./pages/Trainers";
 import Equipment from "./pages/Equipment";
 import Contact from "./pages/Contact";
 
+// Package Pages
+import MonthlyPackages from "./pages/packages/MonthlyPackages";
+import QuarterlyPackages from "./pages/packages/QuarterlyPackages";
+import HalfYearlyPackages from "./pages/packages/HalfYearlyPackages";
+import AnnualPackages from "./pages/packages/AnnualPackages";
+import PersonalTraining from "./pages/packages/PersonalTraining";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -34,6 +41,13 @@ const App = () => (
           <Route path="/trainers" element={<Trainers />} />
           <Route path="/equipment" element={<Equipment />} />
           <Route path="/contact" element={<Contact />} />
+          
+          {/* Package Routes */}
+          <Route path="/packages/monthly" element={<MonthlyPackages />} />
+          <Route path="/packages/quarterly" element={<QuarterlyPackages />} />
+          <Route path="/packages/half-yearly" element={<HalfYearlyPackages />} />
+          <Route path="/packages/annual" element={<AnnualPackages />} />
+          <Route path="/packages/personal-training" element={<PersonalTraining />} />
           
           {/* Member Dashboard Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
