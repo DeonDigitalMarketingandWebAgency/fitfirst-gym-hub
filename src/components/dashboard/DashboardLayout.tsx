@@ -11,7 +11,8 @@ import {
   Menu,
   X,
   CreditCard,
-  Home
+  Home,
+  BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -46,11 +47,11 @@ const DashboardLayout = ({ children, userType = 'user' }: DashboardLayoutProps) 
   const adminMenuItems = [
     { icon: <Home size={20} />, label: 'Dashboard', path: '/admin' },
     { icon: <Package size={20} />, label: 'Categories', path: '/admin/categories' },
-    { icon: <Package size={20} />, label: 'Package Types', path: '/admin/package-types' },
+    { icon: <BookOpen size={20} />, label: 'Package Types', path: '/admin/package-types' },
     { icon: <Package size={20} />, label: 'Packages', path: '/admin/packages' },
-    { icon: <CreditCard size={20} />, label: 'Bookings', path: '/admin/bookings' },
+    { icon: <Calendar size={20} />, label: 'Bookings', path: '/admin/bookings' },
     { icon: <Users size={20} />, label: 'Users', path: '/admin/users' },
-    { icon: <Calendar size={20} />, label: 'Reports', path: '/admin/reports' },
+    { icon: <CreditCard size={20} />, label: 'Reports', path: '/admin/reports' },
     { icon: <User size={20} />, label: 'Profile', path: '/admin/profile' },
     { icon: <Settings size={20} />, label: 'Settings', path: '/admin/settings' },
   ];
