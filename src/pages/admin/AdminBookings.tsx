@@ -248,107 +248,106 @@ const AdminBookings = () => {
                 <TabsTrigger value="completed">Completed</TabsTrigger>
                 <TabsTrigger value="cancelled">Cancelled</TabsTrigger>
               </TabsList>
-            </Tabs>
-            
-            <div className="flex flex-col md:flex-row gap-4 mt-4">
-              <div className="md:w-2/3">
-                <Input 
-                  placeholder="Search by member, email, or class type..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+              
+              <div className="flex flex-col md:flex-row gap-4 mt-4">
+                <div className="md:w-2/3">
+                  <Input 
+                    placeholder="Search by member, email, or class type..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <div className="md:w-1/3">
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Statuses</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="confirmed">Confirmed</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div className="md:w-1/3">
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Filter by status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Statuses</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="confirmed">Confirmed</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <TabsContent value={activeTab} className="mt-0">
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="py-3 px-4 text-left font-medium text-gray-500">Member</th>
-                      <th className="py-3 px-4 text-left font-medium text-gray-500">Type</th>
-                      <th className="py-3 px-4 text-left font-medium text-gray-500">Date</th>
-                      <th className="py-3 px-4 text-left font-medium text-gray-500">Time</th>
-                      <th className="py-3 px-4 text-left font-medium text-gray-500">Status</th>
-                      <th className="py-3 px-4 text-right font-medium text-gray-500">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredBookings.length > 0 ? (
-                      filteredBookings.map((booking) => (
-                        <tr key={booking.id} className="border-b hover:bg-gray-50">
-                          <td className="py-3 px-4">
-                            <div>
-                              <div className="font-medium">{booking.member}</div>
-                              <div className="text-sm text-gray-500">{booking.email}</div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div>
-                              <div>{booking.type}</div>
-                              <div className="text-sm text-gray-500">with {booking.trainer}</div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center">
-                              <Calendar className="h-4 w-4 mr-2 text-gym-orange" />
-                              {booking.date}
-                            </div>
-                          </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center">
-                              <Clock className="h-4 w-4 mr-2 text-gym-orange" />
-                              {booking.time}
-                            </div>
-                          </td>
-                          <td className="py-3 px-4">
-                            <StatusBadge status={booking.status} />
-                          </td>
-                          <td className="py-3 px-4 text-right">
-                            <Select 
-                              defaultValue={booking.status} 
-                              onValueChange={(value) => handleStatusChange(booking.id, value)}
-                            >
-                              <SelectTrigger className="w-[130px]">
-                                <SelectValue placeholder="Change status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="pending">Pending</SelectItem>
-                                <SelectItem value="confirmed">Confirm</SelectItem>
-                                <SelectItem value="completed">Complete</SelectItem>
-                                <SelectItem value="cancelled">Cancel</SelectItem>
-                              </SelectContent>
-                            </Select>
+              
+              <TabsContent value={activeTab} className="mt-4">
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="py-3 px-4 text-left font-medium text-gray-500">Member</th>
+                        <th className="py-3 px-4 text-left font-medium text-gray-500">Type</th>
+                        <th className="py-3 px-4 text-left font-medium text-gray-500">Date</th>
+                        <th className="py-3 px-4 text-left font-medium text-gray-500">Time</th>
+                        <th className="py-3 px-4 text-left font-medium text-gray-500">Status</th>
+                        <th className="py-3 px-4 text-right font-medium text-gray-500">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredBookings.length > 0 ? (
+                        filteredBookings.map((booking) => (
+                          <tr key={booking.id} className="border-b hover:bg-gray-50">
+                            <td className="py-3 px-4">
+                              <div>
+                                <div className="font-medium">{booking.member}</div>
+                                <div className="text-sm text-gray-500">{booking.email}</div>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div>
+                                <div>{booking.type}</div>
+                                <div className="text-sm text-gray-500">with {booking.trainer}</div>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center">
+                                <Calendar className="h-4 w-4 mr-2 text-gym-orange" />
+                                {booking.date}
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center">
+                                <Clock className="h-4 w-4 mr-2 text-gym-orange" />
+                                {booking.time}
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <StatusBadge status={booking.status} />
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <Select 
+                                defaultValue={booking.status} 
+                                onValueChange={(value) => handleStatusChange(booking.id, value)}
+                              >
+                                <SelectTrigger className="w-[130px]">
+                                  <SelectValue placeholder="Change status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="pending">Pending</SelectItem>
+                                  <SelectItem value="confirmed">Confirm</SelectItem>
+                                  <SelectItem value="completed">Complete</SelectItem>
+                                  <SelectItem value="cancelled">Cancel</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={6} className="py-6 text-center text-gray-500">
+                            No bookings found matching your filters.
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={6} className="py-6 text-center text-gray-500">
-                          No bookings found matching your filters.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </TabsContent>
-          </CardContent>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardHeader>
         </Card>
       </div>
     </DashboardLayout>
