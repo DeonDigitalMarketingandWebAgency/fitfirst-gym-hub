@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -43,56 +44,60 @@ import AdminReports from "./pages/admin/AdminReports";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/packages" element={<Packages />} />
-          <Route path="/trainers" element={<Trainers />} />
-          <Route path="/equipment" element={<Equipment />} />
-          <Route path="/contact" element={<Contact />} />
-          
-          {/* Package Routes */}
-          <Route path="/packages/monthly" element={<MonthlyPackages />} />
-          <Route path="/packages/quarterly" element={<QuarterlyPackages />} />
-          <Route path="/packages/half-yearly" element={<HalfYearlyPackages />} />
-          <Route path="/packages/annual" element={<AnnualPackages />} />
-          <Route path="/packages/personal-training" element={<PersonalTraining />} />
-          
-          {/* User Dashboard Routes */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/profile" element={<Profile />} />
-          <Route path="/dashboard/packages" element={<UserPackages />} />
-          <Route path="/dashboard/booking-history" element={<BookingHistory />} />
-          <Route path="/dashboard/change-password" element={<ChangePassword />} />
-          
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/register" element={<AdminRegister />} />
-          
-          {/* Admin Dashboard Routes */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/profile" element={<AdminProfile />} />
-          <Route path="/admin/categories" element={<AdminCategories />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
-          <Route path="/admin/add-package" element={<AdminAddPackage />} />
-          <Route path="/admin/register-member" element={<AdminRegisterMember />} />
-          <Route path="/admin/reports" element={<AdminReports />} />
-          
-          {/* Catch-all for 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/packages" element={<Packages />} />
+              <Route path="/trainers" element={<Trainers />} />
+              <Route path="/equipment" element={<Equipment />} />
+              <Route path="/contact" element={<Contact />} />
+              
+              {/* Package Routes */}
+              <Route path="/packages/monthly" element={<MonthlyPackages />} />
+              <Route path="/packages/quarterly" element={<QuarterlyPackages />} />
+              <Route path="/packages/half-yearly" element={<HalfYearlyPackages />} />
+              <Route path="/packages/annual" element={<AnnualPackages />} />
+              <Route path="/packages/personal-training" element={<PersonalTraining />} />
+              
+              {/* User Dashboard Routes */}
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/profile" element={<Profile />} />
+              <Route path="/dashboard/packages" element={<UserPackages />} />
+              <Route path="/dashboard/booking-history" element={<BookingHistory />} />
+              <Route path="/dashboard/change-password" element={<ChangePassword />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/register" element={<AdminRegister />} />
+              
+              {/* Admin Dashboard Routes */}
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/profile" element={<AdminProfile />} />
+              <Route path="/admin/categories" element={<AdminCategories />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route path="/admin/add-package" element={<AdminAddPackage />} />
+              <Route path="/admin/register-member" element={<AdminRegisterMember />} />
+              <Route path="/admin/reports" element={<AdminReports />} />
+              
+              {/* Catch-all for 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Toaster />
+            <Sonner />
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+};
 
 export default App;
