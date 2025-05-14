@@ -24,6 +24,20 @@ import HalfYearlyPackages from "./pages/packages/HalfYearlyPackages";
 import AnnualPackages from "./pages/packages/AnnualPackages";
 import PersonalTraining from "./pages/packages/PersonalTraining";
 
+// User Dashboard Pages
+import Profile from "./pages/dashboard/Profile";
+import UserPackages from "./pages/dashboard/UserPackages";
+import BookingHistory from "./pages/dashboard/BookingHistory";
+import ChangePassword from "./pages/dashboard/ChangePassword";
+
+// Admin Dashboard Pages
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminRegister from "./pages/admin/AdminRegister";
+import AdminProfile from "./pages/admin/AdminProfile";
+import AdminCategories from "./pages/admin/AdminCategories";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminSettings from "./pages/admin/AdminSettings";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -49,13 +63,23 @@ const App = () => (
           <Route path="/packages/annual" element={<AnnualPackages />} />
           <Route path="/packages/personal-training" element={<PersonalTraining />} />
           
-          {/* Member Dashboard Routes */}
+          {/* User Dashboard Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* Additional member routes would go here */}
+          <Route path="/dashboard/profile" element={<Profile />} />
+          <Route path="/dashboard/packages" element={<UserPackages />} />
+          <Route path="/dashboard/booking-history" element={<BookingHistory />} />
+          <Route path="/dashboard/change-password" element={<ChangePassword />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/register" element={<AdminRegister />} />
           
           {/* Admin Dashboard Routes */}
           <Route path="/admin" element={<AdminDashboard />} />
-          {/* Additional admin routes would go here */}
+          <Route path="/admin/profile" element={<AdminProfile />} />
+          <Route path="/admin/categories" element={<AdminCategories />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
           
           {/* Catch-all for 404 */}
           <Route path="*" element={<NotFound />} />
