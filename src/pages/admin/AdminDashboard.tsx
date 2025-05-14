@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { Users, Package, CreditCard, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
   // Mock data for stats
@@ -157,18 +158,18 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <button className="w-full bg-gym-blue text-white py-2 px-4 rounded-md hover:bg-gym-blue/90 transition-colors flex items-center justify-center">
+                  <Link to="/admin/add-package" className="w-full bg-gym-blue text-white py-2 px-4 rounded-md hover:bg-gym-blue/90 transition-colors flex items-center justify-center">
                     <Package className="h-4 w-4 mr-2" />
                     Add New Package
-                  </button>
-                  <button className="w-full bg-gym-orange text-white py-2 px-4 rounded-md hover:bg-gym-orange/90 transition-colors flex items-center justify-center">
+                  </Link>
+                  <Link to="/admin/register-member" className="w-full bg-gym-orange text-white py-2 px-4 rounded-md hover:bg-gym-orange/90 transition-colors flex items-center justify-center">
                     <Users className="h-4 w-4 mr-2" />
                     Register New Member
-                  </button>
-                  <button className="w-full border border-gym-blue text-gym-blue py-2 px-4 rounded-md hover:bg-gym-blue/10 transition-colors flex items-center justify-center">
+                  </Link>
+                  <Link to="/admin/reports" className="w-full border border-gym-blue text-gym-blue py-2 px-4 rounded-md hover:bg-gym-blue/10 transition-colors flex items-center justify-center">
                     <Calendar className="h-4 w-4 mr-2" />
                     Generate Reports
-                  </button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>

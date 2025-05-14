@@ -37,6 +37,9 @@ import AdminProfile from "./pages/admin/AdminProfile";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminAddPackage from "./pages/admin/AdminAddPackage";
+import AdminRegisterMember from "./pages/admin/AdminRegisterMember";
+import AdminReports from "./pages/admin/AdminReports";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +83,9 @@ const App = () => (
           <Route path="/admin/categories" element={<AdminCategories />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
+          <Route path="/admin/add-package" element={<AdminAddPackage />} />
+          <Route path="/admin/register-member" element={<AdminRegisterMember />} />
+          <Route path="/admin/reports" element={<AdminReports />} />
           
           {/* Catch-all for 404 */}
           <Route path="*" element={<NotFound />} />
