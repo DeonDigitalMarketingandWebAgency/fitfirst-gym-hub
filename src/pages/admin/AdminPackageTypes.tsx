@@ -9,8 +9,15 @@ import { useToast } from '@/components/ui/use-toast';
 import { Pencil, Trash, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 
+// Define the interface for package type
+interface PackageType {
+  id: number;
+  name: string;
+  description: string;
+}
+
 const AdminPackageTypes = () => {
-  const [packageTypes, setPackageTypes] = useState([
+  const [packageTypes, setPackageTypes] = useState<PackageType[]>([
     { id: 1, name: 'Monthly', description: 'Pay month-to-month' },
     { id: 2, name: 'Quarterly', description: 'Pay for 3 months in advance' },
     { id: 3, name: 'Half Yearly', description: 'Pay for 6 months in advance' },
@@ -20,16 +27,16 @@ const AdminPackageTypes = () => {
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [currentType, setCurrentType] = useState<{ id?: number, name: string, description: string }>({ 
+  const [currentType, setCurrentType] = useState<PackageType | Omit<PackageType, 'id'>>({ 
     name: '', 
     description: '' 
   });
   
   const { toast } = useToast();
 
-  const handleOpenDialog = (isEdit = false, packageType = { id: 0, name: '', description: '' }) => {
+  const handleOpenDialog = (isEdit = false, packageType: PackageType | null = null) => {
     setIsEditMode(isEdit);
-    setCurrentType(isEdit ? packageType : { name: '', description: '' });
+    setCurrentType(isEdit && packageType ? packageType : { name: '', description: '' });
     setIsDialogOpen(true);
   };
 
@@ -43,22 +50,23 @@ const AdminPackageTypes = () => {
       return;
     }
     
-    if (isEditMode) {
+    if (isEditMode && 'id' in currentType) {
       setPackageTypes(packageTypes.map(type => 
-        type.id === currentType.id ? { ...currentType } : type
+        type.id === currentType.id ? currentType as PackageType : type
       ));
       toast({
         title: "Success",
         description: "Package type updated successfully",
       });
     } else {
-      setPackageTypes([
-        ...packageTypes, 
-        { 
-          id: Math.max(0, ...packageTypes.map(t => t.id)) + 1,
-          ...currentType 
-        }
-      ]);
+      const newId = Math.max(0, ...packageTypes.map(t => t.id)) + 1;
+      const newPackageType: PackageType = {
+        id: newId,
+        name: currentType.name,
+        description: currentType.description
+      };
+      
+      setPackageTypes([...packageTypes, newPackageType]);
       toast({
         title: "Success",
         description: "Package type added successfully",
