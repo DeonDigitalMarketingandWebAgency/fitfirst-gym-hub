@@ -56,6 +56,7 @@ const DashboardLayout = ({ children, userType = 'user' }: DashboardLayoutProps) 
     { icon: <Settings size={20} />, label: 'Settings', path: '/admin/settings' },
   ];
 
+  const dashboardHomePath = userType === 'admin' ? '/admin' : '/dashboard';
   const menuItems = userType === 'admin' ? adminMenuItems : userMenuItems;
 
   return (
@@ -78,7 +79,7 @@ const DashboardLayout = ({ children, userType = 'user' }: DashboardLayoutProps) 
         <div className="flex flex-col h-full">
           {/* Sidebar header */}
           <div className="flex items-center justify-between px-4 py-5 border-b border-gray-700">
-            <Link to="/" className="flex items-center">
+            <Link to={dashboardHomePath} className="flex items-center hover:text-gym-orange transition-colors">
               <span className="text-xl font-bold">
                 Fitness<span className="text-gym-orange">First</span>
               </span>
@@ -98,7 +99,7 @@ const DashboardLayout = ({ children, userType = 'user' }: DashboardLayoutProps) 
                 <li key={index}>
                   <Link
                     to={item.path}
-                    className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+                    className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md transition-colors duration-200"
                   >
                     <span className="mr-3">{item.icon}</span>
                     {item.label}
@@ -112,7 +113,7 @@ const DashboardLayout = ({ children, userType = 'user' }: DashboardLayoutProps) 
           <div className="p-4 border-t border-gray-700">
             <button
               onClick={handleLogout}
-              className="flex items-center w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+              className="flex items-center w-full px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md transition-colors duration-200"
             >
               <LogOut size={20} className="mr-3" />
               Logout

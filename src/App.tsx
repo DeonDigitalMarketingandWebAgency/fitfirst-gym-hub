@@ -17,6 +17,7 @@ import Packages from "./pages/Packages";
 import Trainers from "./pages/Trainers";
 import Equipment from "./pages/Equipment";
 import Contact from "./pages/Contact";
+import Payment from "./pages/Payment";
 
 // Package Pages
 import MonthlyPackages from "./pages/packages/MonthlyPackages";
@@ -61,6 +62,7 @@ const App = () => {
             <Route path="/trainers" element={<Trainers />} />
             <Route path="/equipment" element={<Equipment />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/payment" element={<Payment />} />
             
             {/* Package Routes */}
             <Route path="/packages/monthly" element={<MonthlyPackages />} />

@@ -13,7 +13,8 @@ const users = [
     gender: "male",
     desiredPackage: "monthly-premium",
     fitnessGoals: "general-fitness",
-    registrationDate: "2023-05-10"
+    registrationDate: "2023-05-10",
+    profilePicture: "" // empty string for demo user
   }
 ];
 
@@ -30,6 +31,7 @@ export interface User {
   desiredPackage?: string;
   fitnessGoals?: string;
   registrationDate: string;
+  profilePicture?: string;
 }
 
 export interface UserRegistration {
@@ -43,6 +45,7 @@ export interface UserRegistration {
   gender?: string;
   desiredPackage?: string;
   fitnessGoals?: string;
+  profilePicture?: string;
 }
 
 export interface LoginCredentials {
@@ -77,19 +80,20 @@ export const register = (userData: UserRegistration): Promise<User> => {
       const registrationDate = today.toISOString().split('T')[0];
 
       // Create new user
-      const newUser: User & { password: string } = {
+      const newUser = {
         id: users.length + 1,
         fullName: userData.fullName,
         email: userData.email,
         phone: userData.phone,
         password: userData.password, // In a real app, this would be hashed
-        height: userData.height,
-        weight: userData.weight,
-        age: userData.age,
-        gender: userData.gender,
-        desiredPackage: userData.desiredPackage,
-        fitnessGoals: userData.fitnessGoals,
-        registrationDate
+        height: userData.height || 0,
+        weight: userData.weight || 0,
+        age: userData.age || 0,
+        gender: userData.gender || '',
+        desiredPackage: userData.desiredPackage || '',
+        fitnessGoals: userData.fitnessGoals || '',
+        registrationDate,
+        profilePicture: userData.profilePicture || ''
       };
       
       // Add to "database"

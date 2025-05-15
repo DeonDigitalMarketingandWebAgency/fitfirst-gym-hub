@@ -1,215 +1,267 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/components/ui/use-toast';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { User, Edit, Save } from 'lucide-react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
-import { User, Mail, Phone, MapPin } from 'lucide-react';
+import { getCurrentUser, User as UserType } from '@/services/authService';
+import { useToast } from '@/components/ui/use-toast';
 
 const Profile = () => {
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Mock user data
-  const [userData, setUserData] = useState({
-    fullName: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '555-123-4567',
-    address: '123 Fitness St, Gymville, GY 12345',
-    dob: '1990-05-15',
-    emergencyContact: 'Jane Doe',
-    emergencyPhone: '555-987-6543'
+  const [user, setUser] = useState<UserType | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    height: '',
+    weight: '',
+    age: '',
+    gender: '',
+    desiredPackage: '',
+    fitnessGoals: ''
   });
+  
+  const { toast } = useToast();
 
-  const handlePersonalInfoSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      toast({
-        title: "Profile Updated",
-        description: "Your personal information has been updated successfully."
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+      setUser(currentUser);
+      setFormData({
+        fullName: currentUser.fullName || '',
+        email: currentUser.email || '',
+        phone: currentUser.phone || '',
+        height: currentUser.height ? String(currentUser.height) : '',
+        weight: currentUser.weight ? String(currentUser.weight) : '',
+        age: currentUser.age ? String(currentUser.age) : '',
+        gender: currentUser.gender || '',
+        desiredPackage: currentUser.desiredPackage || '',
+        fitnessGoals: currentUser.fitnessGoals || ''
       });
-      setIsLoading(false);
-    }, 1000);
+    }
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handlePasswordChange = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleSave = () => {
+    // In a real app, this would send data to an API
+    // For now, we'll just update the state and show a toast
+    setIsEditing(false);
     
-    setTimeout(() => {
-      toast({
-        title: "Password Updated",
-        description: "Your password has been changed successfully."
-      });
-      setIsLoading(false);
-    }, 1000);
+    const updatedUser = {
+      ...user!,
+      fullName: formData.fullName,
+      phone: formData.phone,
+      height: parseFloat(formData.height) || user?.height,
+      weight: parseFloat(formData.weight) || user?.weight,
+      age: parseInt(formData.age) || user?.age,
+      gender: formData.gender || user?.gender,
+      desiredPackage: formData.desiredPackage || user?.desiredPackage,
+      fitnessGoals: formData.fitnessGoals || user?.fitnessGoals
+    };
+    
+    setUser(updatedUser);
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    
+    toast({
+      title: "Profile Updated",
+      description: "Your profile information has been updated successfully."
+    });
   };
+
+  if (!user) {
+    return (
+      <DashboardLayout>
+        <div className="text-center py-10">
+          <p>Loading profile information...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-gym-blue">My Profile</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gym-blue">My Profile</h1>
+          <Button 
+            onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+            className={isEditing ? "bg-green-600 hover:bg-green-700" : "bg-gym-blue hover:bg-gym-blue/90"}
+          >
+            {isEditing ? (
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                Save Changes
+              </>
+            ) : (
+              <>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Profile
+              </>
+            )}
+          </Button>
+        </div>
         
-        <Tabs defaultValue="personal" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="personal">Personal Information</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
-          </TabsList>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="md:col-span-1">
+            <CardHeader>
+              <CardTitle>Profile Picture</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center">
+              <Avatar className="h-36 w-36 mb-4">
+                <AvatarImage 
+                  src={user.profilePicture || ''} 
+                  alt={user.fullName}
+                  className="object-cover" 
+                />
+                <AvatarFallback className="bg-gym-blue text-white text-3xl">
+                  <User size={48} />
+                </AvatarFallback>
+              </Avatar>
+              <div className="text-center">
+                <h2 className="text-xl font-semibold text-gym-blue">{user.fullName}</h2>
+                <p className="text-gym-gray">{user.email}</p>
+                <p className="text-gym-gray mt-1">Member since {user.registrationDate}</p>
+              </div>
+            </CardContent>
+          </Card>
           
-          <TabsContent value="personal">
-            <Card>
-              <CardHeader>
-                <CardTitle>Personal Information</CardTitle>
-                <CardDescription>Update your personal details</CardDescription>
-              </CardHeader>
-              <form onSubmit={handlePersonalInfoSubmit}>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="fullName">Full Name</Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-3 text-gray-400">
-                          <User size={16} />
-                        </span>
-                        <Input 
-                          id="fullName" 
-                          value={userData.fullName}
-                          onChange={(e) => setUserData({...userData, fullName: e.target.value})}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-3 text-gray-400">
-                          <Mail size={16} />
-                        </span>
-                        <Input 
-                          id="email" 
-                          type="email" 
-                          value={userData.email}
-                          onChange={(e) => setUserData({...userData, email: e.target.value})}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-3 text-gray-400">
-                          <Phone size={16} />
-                        </span>
-                        <Input 
-                          id="phone" 
-                          value={userData.phone}
-                          onChange={(e) => setUserData({...userData, phone: e.target.value})}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="dob">Date of Birth</Label>
-                      <Input 
-                        id="dob" 
-                        type="date" 
-                        value={userData.dob}
-                        onChange={(e) => setUserData({...userData, dob: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="address">Address</Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-3 text-gray-400">
-                        <MapPin size={16} />
-                      </span>
-                      <Input 
-                        id="address" 
-                        value={userData.address}
-                        onChange={(e) => setUserData({...userData, address: e.target.value})}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="emergencyContact">Emergency Contact</Label>
-                      <Input 
-                        id="emergencyContact" 
-                        value={userData.emergencyContact}
-                        onChange={(e) => setUserData({...userData, emergencyContact: e.target.value})}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="emergencyPhone">Emergency Phone</Label>
-                      <Input 
-                        id="emergencyPhone" 
-                        value={userData.emergencyPhone}
-                        onChange={(e) => setUserData({...userData, emergencyPhone: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    type="submit" 
-                    className="bg-gym-blue hover:bg-gym-blue/90"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Saving..." : "Save Changes"}
-                  </Button>
-                </CardFooter>
-              </form>
-            </Card>
-          </TabsContent>
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle>Personal Information</CardTitle>
+              <CardDescription>Update your personal details below</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input 
+                    id="fullName"
+                    name="fullName" 
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input 
+                    id="email"
+                    name="email" 
+                    value={formData.email}
+                    disabled={true} // Email should not be editable
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input 
+                    id="phone"
+                    name="phone" 
+                    value={formData.phone}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="gender">Gender</Label>
+                  <Input 
+                    id="gender"
+                    name="gender" 
+                    value={formData.gender}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="age">Age</Label>
+                  <Input 
+                    id="age"
+                    name="age" 
+                    type="number"
+                    value={formData.age}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="height">Height (cm)</Label>
+                  <Input 
+                    id="height"
+                    name="height" 
+                    type="number"
+                    value={formData.height}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="weight">Weight (kg)</Label>
+                  <Input 
+                    id="weight"
+                    name="weight" 
+                    type="number"
+                    value={formData.weight}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="fitnessGoals">Fitness Goals</Label>
+                  <Input 
+                    id="fitnessGoals"
+                    name="fitnessGoals" 
+                    value={formData.fitnessGoals}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="desiredPackage">Current Package</Label>
+                  <Input 
+                    id="desiredPackage"
+                    name="desiredPackage" 
+                    value={formData.desiredPackage}
+                    disabled={true} // Package should not be directly editable
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           
-          <TabsContent value="security">
-            <Card>
-              <CardHeader>
-                <CardTitle>Change Password</CardTitle>
-                <CardDescription>Update your password</CardDescription>
-              </CardHeader>
-              <form onSubmit={handlePasswordChange}>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="currentPassword">Current Password</Label>
-                    <Input id="currentPassword" type="password" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="newPassword">New Password</Label>
-                    <Input id="newPassword" type="password" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                    <Input id="confirmPassword" type="password" />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    type="submit" 
-                    className="bg-gym-blue hover:bg-gym-blue/90"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Changing Password..." : "Change Password"}
-                  </Button>
-                </CardFooter>
-              </form>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          <Card className="md:col-span-3">
+            <CardHeader>
+              <CardTitle>Membership Information</CardTitle>
+              <CardDescription>
+                Details about your current membership package
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="p-4 bg-gym-orange/10 rounded-lg border border-gym-orange/20">
+                <h3 className="text-lg font-semibold text-gym-orange mb-2">
+                  Active Membership: {formData.desiredPackage.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </h3>
+                <p className="text-gym-gray">
+                  To upgrade or change your membership package, please visit the Packages page or contact our customer support.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </DashboardLayout>
   );

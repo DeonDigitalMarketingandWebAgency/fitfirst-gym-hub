@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,6 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import MainLayout from '@/components/layout/MainLayout';
 import { register, UserRegistration } from '@/services/authService';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Camera, User } from 'lucide-react';
 
 const Register = () => {
   // Basic information
@@ -20,6 +22,9 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const [profilePictureURL, setProfilePictureURL] = useState<string>('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Physical information
   const [height, setHeight] = useState('');
@@ -36,6 +41,20 @@ const Register = () => {
   
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setProfilePicture(file);
+      setProfilePictureURL(URL.createObjectURL(file));
+    }
+  };
+
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +80,12 @@ const Register = () => {
     setIsLoading(true);
     
     try {
+      // Convert profile picture to base64 if it exists
+      let profilePictureBase64 = '';
+      if (profilePicture) {
+        profilePictureBase64 = await convertFileToBase64(profilePicture);
+      }
+      
       const userData: UserRegistration = {
         fullName,
         email,
@@ -72,17 +97,26 @@ const Register = () => {
         age: parseInt(age) || 0,
         gender,
         desiredPackage,
-        fitnessGoals
+        fitnessGoals,
+        profilePicture: profilePictureBase64
       };
       
-      await register(userData);
+      const user = await register(userData);
       
       toast({
         title: "Registration Successful",
         description: "Your account has been created successfully!",
       });
       
-      navigate('/login');
+      // If the user came from selecting a package, redirect to payment page
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedPackage = urlParams.get('package');
+      
+      if (selectedPackage) {
+        navigate(`/payment?package=${selectedPackage}`);
+      } else {
+        navigate('/login');
+      }
     } catch (error) {
       toast({
         variant: "destructive",
@@ -92,6 +126,15 @@ const Register = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
   };
 
   const validateBasicInfo = () => {
@@ -120,8 +163,19 @@ const Register = () => {
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-16 md:py-24 flex justify-center">
-        <Card className="w-full max-w-2xl">
+        <Card className="w-full max-w-2xl relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-gym-blue/10 to-gym-orange/5 rounded-lg -z-10"></div>
+          <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gym-orange/10 rounded-full blur-3xl -z-10"></div>
+          <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-gym-blue/10 rounded-full blur-3xl -z-10"></div>
+          
           <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <img 
+                src="/placeholder.svg" 
+                alt="Fitness First" 
+                className="h-16 w-auto" 
+              />
+            </div>
             <CardTitle className="text-2xl text-gym-blue">Create an Account</CardTitle>
             <CardDescription>
               Join Fitness First and start your fitness journey
@@ -131,16 +185,40 @@ const Register = () => {
           <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
             <div className="px-6">
               <TabsList className="grid grid-cols-3 w-full">
-                <TabsTrigger value="basic">Basic Info</TabsTrigger>
-                <TabsTrigger value="physical">Physical Info</TabsTrigger>
-                <TabsTrigger value="package">Package Selection</TabsTrigger>
+                <TabsTrigger value="basic" className="data-[state=active]:bg-gym-orange data-[state=active]:text-white">Basic Info</TabsTrigger>
+                <TabsTrigger value="physical" className="data-[state=active]:bg-gym-orange data-[state=active]:text-white">Physical Info</TabsTrigger>
+                <TabsTrigger value="package" className="data-[state=active]:bg-gym-orange data-[state=active]:text-white">Package Selection</TabsTrigger>
               </TabsList>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <TabsContent value="basic">
+              <TabsContent value="basic" className="animate-fade-in">
                 <CardContent className="pt-6">
                   <div className="grid gap-5">
+                    <div className="flex justify-center mb-4">
+                      <div className="relative group cursor-pointer" onClick={triggerFileInput}>
+                        <Avatar className="h-24 w-24 border-2 border-gym-orange">
+                          <AvatarImage src={profilePictureURL} alt={fullName} />
+                          <AvatarFallback className="bg-gym-blue text-white text-xl">
+                            {profilePictureURL ? '' : <User size={32} />}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Camera className="text-white" />
+                        </div>
+                        <input 
+                          type="file" 
+                          ref={fileInputRef}
+                          className="hidden" 
+                          accept="image/*" 
+                          onChange={handleProfilePictureChange} 
+                        />
+                      </div>
+                    </div>
+                    <p className="text-center text-sm text-gym-gray -mt-2 mb-2">
+                      Click to add profile picture
+                    </p>
+                    
                     <div className="grid gap-2">
                       <Label htmlFor="fullName">Full Name</Label>
                       <Input
@@ -197,7 +275,7 @@ const Register = () => {
                     </div>
                     <Button 
                       type="button" 
-                      className="bg-gym-orange hover:bg-gym-orange/90"
+                      className="bg-gym-orange hover:bg-gym-orange/90 mt-2"
                       onClick={goToNext}
                       disabled={!validateBasicInfo()}
                     >
@@ -207,7 +285,7 @@ const Register = () => {
                 </CardContent>
               </TabsContent>
 
-              <TabsContent value="physical">
+              <TabsContent value="physical" className="animate-fade-in">
                 <CardContent className="pt-6">
                   <div className="grid gap-5">
                     <div className="grid grid-cols-2 gap-4">
@@ -258,7 +336,7 @@ const Register = () => {
                         </Select>
                       </div>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between mt-2">
                       <Button 
                         type="button" 
                         variant="outline" 
@@ -278,7 +356,7 @@ const Register = () => {
                 </CardContent>
               </TabsContent>
 
-              <TabsContent value="package">
+              <TabsContent value="package" className="animate-fade-in">
                 <CardContent className="pt-6">
                   <div className="grid gap-5">
                     <div className="grid gap-2">
@@ -314,7 +392,7 @@ const Register = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 mt-2">
                       <Checkbox 
                         id="terms" 
                         checked={agreeTerms}
@@ -332,7 +410,7 @@ const Register = () => {
                         </Link>
                       </Label>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between mt-2">
                       <Button 
                         type="button" 
                         variant="outline" 
