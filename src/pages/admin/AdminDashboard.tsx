@@ -1,16 +1,55 @@
 
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { Users, Package, CreditCard, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getAllUsers, User } from '@/services/authService';
 
 const AdminDashboard = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const allUsers = await getAllUsers();
+        setUsers(allUsers);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // Get latest registered users
+  const latestUsers = [...users]
+    .sort((a, b) => {
+      return new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime();
+    })
+    .slice(0, 5);
+
+  // Package name mapping
+  const packageNames: Record<string, string> = {
+    "monthly-basic": "Monthly Basic",
+    "monthly-standard": "Monthly Standard",
+    "monthly-premium": "Premium Monthly",
+    "quarterly-basic": "Quarterly Basic",
+    "quarterly-premium": "Premium Quarterly",
+    "half-yearly": "Half Yearly",
+    "annual": "Annual",
+    "personal-training": "Personal Training"
+  };
+
   // Mock data for stats
   const stats = {
-    totalMembers: 245,
-    activePackages: 187,
-    totalBookings: 438,
-    monthlyRevenue: 15680
+    totalMembers: users.length,
+    activePackages: Math.round(users.length * 0.8),
+    totalBookings: users.length * 2,
+    monthlyRevenue: users.length * 80
   };
 
   // Mock data for recent bookings
@@ -19,13 +58,6 @@ const AdminDashboard = () => {
     { id: 2, user: 'David Wilson', package: 'Annual Elite', date: 'Oct 10, 2023', amount: 449.00, status: 'Pending' },
     { id: 3, user: 'Michelle Lee', package: 'Monthly Basic', date: 'Oct 9, 2023', amount: 49.00, status: 'Completed' },
     { id: 4, user: 'Robert Brown', package: 'Personal Training', date: 'Oct 8, 2023', amount: 75.00, status: 'Completed' }
-  ];
-
-  // Mock data for recent users
-  const recentUsers = [
-    { id: 1, name: 'Thomas Martinez', email: 'thomas.m@example.com', joinDate: 'Oct 12, 2023' },
-    { id: 2, name: 'Sarah Johnson', email: 'sarah.j@example.com', joinDate: 'Oct 11, 2023' },
-    { id: 3, name: 'James Wilson', email: 'james.w@example.com', joinDate: 'Oct 10, 2023' }
   ];
 
   return (
@@ -42,7 +74,7 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gym-blue">{stats.totalMembers}</div>
-              <p className="text-xs text-gray-500 mt-1">+12 this month</p>
+              <p className="text-xs text-gray-500 mt-1">+{latestUsers.length} this month</p>
             </CardContent>
           </Card>
           <Card>
@@ -52,7 +84,7 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gym-blue">{stats.activePackages}</div>
-              <p className="text-xs text-gray-500 mt-1">+5 this week</p>
+              <p className="text-xs text-gray-500 mt-1">+{Math.round(latestUsers.length * 0.8)} this week</p>
             </CardContent>
           </Card>
           <Card>
@@ -62,7 +94,7 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gym-blue">{stats.totalBookings}</div>
-              <p className="text-xs text-gray-500 mt-1">+28 this month</p>
+              <p className="text-xs text-gray-500 mt-1">+{latestUsers.length * 2} this month</p>
             </CardContent>
           </Card>
           <Card>
@@ -119,9 +151,9 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Recent Users and Quick Actions */}
+        {/* New Members and Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Recent Users */}
+          {/* New Members */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
@@ -129,22 +161,37 @@ const AdminDashboard = () => {
                 <CardDescription>Recently registered users</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {recentUsers.map((user) => (
-                    <div key={user.id} className="flex items-center border-b border-gray-100 pb-4 last:border-0 last:pb-0">
-                      <div className="bg-gray-100 h-10 w-10 rounded-full flex items-center justify-center mr-4">
-                        <span className="font-medium text-gym-blue">{user.name.charAt(0)}</span>
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gym-blue">{user.name}</h3>
-                        <div className="flex text-sm text-gray-500 space-x-4">
-                          <span>{user.email}</span>
-                          <span>Joined: {user.joinDate}</span>
+                {isLoading ? (
+                  <p>Loading users...</p>
+                ) : (
+                  <div className="space-y-4">
+                    {latestUsers.length === 0 ? (
+                      <p>No registered users found.</p>
+                    ) : (
+                      latestUsers.map((user) => (
+                        <div key={user.id} className="flex items-center border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                          <div className="bg-gray-100 h-10 w-10 rounded-full flex items-center justify-center mr-4">
+                            <span className="font-medium text-gym-blue">{user.fullName.charAt(0)}</span>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-medium text-gym-blue">{user.fullName}</h3>
+                            <div className="flex flex-col md:flex-row md:space-x-4 text-sm text-gray-500">
+                              <span>{user.email}</span>
+                              <span>Joined: {user.registrationDate}</span>
+                            </div>
+                          </div>
+                          <div className="hidden md:block">
+                            {user.desiredPackage && (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {packageNames[user.desiredPackage]}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                      ))
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -165,6 +212,10 @@ const AdminDashboard = () => {
                   <Link to="/admin/register-member" className="w-full bg-gym-orange text-white py-2 px-4 rounded-md hover:bg-gym-orange/90 transition-colors flex items-center justify-center">
                     <Users className="h-4 w-4 mr-2" />
                     Register New Member
+                  </Link>
+                  <Link to="/admin/users" className="w-full border border-gym-blue text-gym-blue py-2 px-4 rounded-md hover:bg-gym-blue/10 transition-colors flex items-center justify-center">
+                    <Users className="h-4 w-4 mr-2" />
+                    View All Members
                   </Link>
                   <Link to="/admin/reports" className="w-full border border-gym-blue text-gym-blue py-2 px-4 rounded-md hover:bg-gym-blue/10 transition-colors flex items-center justify-center">
                     <Calendar className="h-4 w-4 mr-2" />

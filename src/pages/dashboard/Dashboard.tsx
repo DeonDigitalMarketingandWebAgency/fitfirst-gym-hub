@@ -1,12 +1,42 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
-import { Calendar, CreditCard, Package, Clock } from 'lucide-react';
+import { Calendar, CreditCard, Package, Clock, User } from 'lucide-react';
+import { getCurrentUser } from '@/services/authService';
+import { useEffect, useState } from 'react';
 
 const Dashboard = () => {
+  const [user, setUser] = useState(getCurrentUser());
+  
+  useEffect(() => {
+    // Refresh user data when component mounts
+    setUser(getCurrentUser());
+  }, []);
+
+  // Package name mapping
+  const packageNames: Record<string, string> = {
+    "monthly-basic": "Monthly Basic",
+    "monthly-standard": "Monthly Standard",
+    "monthly-premium": "Premium Monthly",
+    "quarterly-basic": "Quarterly Basic",
+    "quarterly-premium": "Premium Quarterly",
+    "half-yearly": "Half Yearly",
+    "annual": "Annual",
+    "personal-training": "Personal Training"
+  };
+
+  // Goals mapping
+  const goalsNames: Record<string, string> = {
+    "weight-loss": "Weight Loss",
+    "muscle-gain": "Muscle Gain",
+    "endurance": "Improve Endurance",
+    "flexibility": "Increase Flexibility",
+    "general-fitness": "General Fitness"
+  };
+
   // Mock data for active package
   const activePackage = {
-    name: 'Premium Quarterly',
+    name: user?.desiredPackage ? packageNames[user.desiredPackage] : 'Premium Quarterly',
     startDate: '2023-09-15',
     endDate: '2023-12-15',
     daysLeft: 45,
@@ -29,6 +59,81 @@ const Dashboard = () => {
     <DashboardLayout>
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-gym-blue">Member Dashboard</h1>
+        
+        {/* User Profile Card */}
+        {user && (
+          <Card>
+            <CardHeader>
+              <CardTitle>My Profile</CardTitle>
+              <CardDescription>Your personal information</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="flex-shrink-0 flex items-center justify-center">
+                  <div className="h-24 w-24 rounded-full bg-gym-blue flex items-center justify-center text-white">
+                    <User size={40} />
+                  </div>
+                </div>
+                <div className="flex-grow grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500">Name</h3>
+                    <p className="text-lg font-semibold text-gym-blue">{user.fullName}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500">Email</h3>
+                    <p className="text-lg font-semibold text-gym-blue">{user.email}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500">Phone</h3>
+                    <p className="text-lg font-semibold text-gym-blue">{user.phone || 'Not provided'}</p>
+                  </div>
+                  
+                  {user.age && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500">Age</h3>
+                      <p className="text-lg font-semibold text-gym-blue">{user.age} years</p>
+                    </div>
+                  )}
+                  
+                  {user.gender && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500">Gender</h3>
+                      <p className="text-lg font-semibold text-gym-blue">{user.gender.charAt(0).toUpperCase() + user.gender.slice(1)}</p>
+                    </div>
+                  )}
+                  
+                  {user.height && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500">Height</h3>
+                      <p className="text-lg font-semibold text-gym-blue">{user.height} cm</p>
+                    </div>
+                  )}
+                  
+                  {user.weight && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500">Weight</h3>
+                      <p className="text-lg font-semibold text-gym-blue">{user.weight} kg</p>
+                    </div>
+                  )}
+                  
+                  {user.fitnessGoals && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500">Fitness Goal</h3>
+                      <p className="text-lg font-semibold text-gym-blue">{goalsNames[user.fitnessGoals]}</p>
+                    </div>
+                  )}
+                  
+                  {user.registrationDate && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500">Member Since</h3>
+                      <p className="text-lg font-semibold text-gym-blue">{user.registrationDate}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
         
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

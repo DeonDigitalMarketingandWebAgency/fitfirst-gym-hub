@@ -9,26 +9,54 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { Users } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { register, UserRegistration } from '@/services/authService';
 
 const AdminRegisterMember = () => {
+  // Basic information
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState(''); // Auto-generated or default
+  
+  // Physical information
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [address, setAddress] = useState('');
+  
+  // Package information
   const [membershipType, setMembershipType] = useState('');
+  const [fitnessGoals, setFitnessGoals] = useState('');
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // In a real app, you would send this data to your backend
-    setTimeout(() => {
+    try {
+      // In a real app, you might want to generate a random password
+      // or use a default one that the member can change later
+      const defaultPassword = 'Fitness@123';
+      
+      const userData: UserRegistration = {
+        fullName: `${firstName} ${lastName}`,
+        email,
+        phone,
+        password: defaultPassword,
+        height: parseFloat(height) || undefined,
+        weight: parseFloat(weight) || undefined,
+        age: parseInt(age) || undefined,
+        gender,
+        desiredPackage: membershipType,
+        fitnessGoals
+      };
+      
+      await register(userData);
+      
       toast({
         title: "Member Registered",
         description: `${firstName} ${lastName} has been successfully registered.`,
@@ -39,12 +67,21 @@ const AdminRegisterMember = () => {
       setLastName('');
       setEmail('');
       setPhone('');
+      setHeight('');
+      setWeight('');
+      setAge('');
       setGender('');
-      setDateOfBirth('');
-      setAddress('');
       setMembershipType('');
+      setFitnessGoals('');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Registration Failed",
+        description: error instanceof Error ? error.message : "There was an error registering the member.",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -122,23 +159,32 @@ const AdminRegisterMember = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="date-of-birth">Date of Birth</Label>
+                  <Label htmlFor="date-of-birth">Age</Label>
                   <Input 
-                    id="date-of-birth" 
-                    type="date"
-                    value={dateOfBirth}
-                    onChange={(e) => setDateOfBirth(e.target.value)}
-                    required
+                    id="age" 
+                    type="number"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
                   />
                 </div>
                 
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="address">Address</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="height">Height (cm)</Label>
                   <Input 
-                    id="address" 
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    required
+                    id="height" 
+                    type="number"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="weight">Weight (kg)</Label>
+                  <Input 
+                    id="weight" 
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
                   />
                 </div>
                 
@@ -157,6 +203,22 @@ const AdminRegisterMember = () => {
                       <SelectItem value="half-yearly">Half Yearly</SelectItem>
                       <SelectItem value="annual">Annual</SelectItem>
                       <SelectItem value="personal-training">Personal Training</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="fitness-goals">Fitness Goals</Label>
+                  <Select value={fitnessGoals} onValueChange={setFitnessGoals}>
+                    <SelectTrigger id="fitness-goals">
+                      <SelectValue placeholder="Select Main Fitness Goal" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="weight-loss">Weight Loss</SelectItem>
+                      <SelectItem value="muscle-gain">Muscle Gain</SelectItem>
+                      <SelectItem value="endurance">Improve Endurance</SelectItem>
+                      <SelectItem value="flexibility">Increase Flexibility</SelectItem>
+                      <SelectItem value="general-fitness">General Fitness</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

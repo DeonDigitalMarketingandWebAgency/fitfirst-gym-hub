@@ -6,7 +6,14 @@ const users = [
     fullName: "Demo User",
     email: "demo@example.com",
     phone: "555-123-4567",
-    password: "password" // In a real app, this would be hashed
+    password: "password", // In a real app, this would be hashed
+    height: 175,
+    weight: 70,
+    age: 30,
+    gender: "male",
+    desiredPackage: "monthly-premium",
+    fitnessGoals: "general-fitness",
+    registrationDate: "2023-05-10"
   }
 ];
 
@@ -16,6 +23,13 @@ export interface User {
   fullName: string;
   email: string;
   phone: string;
+  height?: number;
+  weight?: number;
+  age?: number;
+  gender?: string;
+  desiredPackage?: string;
+  fitnessGoals?: string;
+  registrationDate: string;
 }
 
 export interface UserRegistration {
@@ -23,6 +37,12 @@ export interface UserRegistration {
   email: string;
   phone: string;
   password: string;
+  height?: number;
+  weight?: number;
+  age?: number;
+  gender?: string;
+  desiredPackage?: string;
+  fitnessGoals?: string;
 }
 
 export interface LoginCredentials {
@@ -52,13 +72,24 @@ export const register = (userData: UserRegistration): Promise<User> => {
         return;
       }
 
+      // Format current date as YYYY-MM-DD
+      const today = new Date();
+      const registrationDate = today.toISOString().split('T')[0];
+
       // Create new user
       const newUser: User & { password: string } = {
         id: users.length + 1,
         fullName: userData.fullName,
         email: userData.email,
         phone: userData.phone,
-        password: userData.password // In a real app, this would be hashed
+        password: userData.password, // In a real app, this would be hashed
+        height: userData.height,
+        weight: userData.weight,
+        age: userData.age,
+        gender: userData.gender,
+        desiredPackage: userData.desiredPackage,
+        fitnessGoals: userData.fitnessGoals,
+        registrationDate
       };
       
       // Add to "database"
@@ -70,6 +101,21 @@ export const register = (userData: UserRegistration): Promise<User> => {
       
       resolve(userWithoutPassword);
     }, 1000);
+  });
+};
+
+// Get all registered users (for admin dashboard)
+export const getAllUsers = (): Promise<User[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Return users without passwords
+      const usersWithoutPasswords = users.map(user => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+      resolve(usersWithoutPasswords);
+    }, 500);
   });
 };
 
