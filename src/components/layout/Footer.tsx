@@ -68,27 +68,27 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-4">Packages</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/packages" className="text-gray-300 hover:text-gym-orange transition-colors">
+                <Link to="/packages?tab=monthly" className="text-gray-300 hover:text-gym-orange transition-colors">
                   Monthly
                 </Link>
               </li>
               <li>
-                <Link to="/packages" className="text-gray-300 hover:text-gym-orange transition-colors">
+                <Link to="/packages?tab=quarterly" className="text-gray-300 hover:text-gym-orange transition-colors">
                   Quarterly
                 </Link>
               </li>
               <li>
-                <Link to="/packages" className="text-gray-300 hover:text-gym-orange transition-colors">
+                <Link to="/packages?tab=half-yearly" className="text-gray-300 hover:text-gym-orange transition-colors">
                   Half-yearly
                 </Link>
               </li>
               <li>
-                <Link to="/packages" className="text-gray-300 hover:text-gym-orange transition-colors">
+                <Link to="/packages?tab=annual" className="text-gray-300 hover:text-gym-orange transition-colors">
                   Annual
                 </Link>
               </li>
               <li>
-                <Link to="/packages" className="text-gray-300 hover:text-gym-orange transition-colors">
+                <Link to="/packages?tab=personal-training" className="text-gray-300 hover:text-gym-orange transition-colors">
                   Personal Training
                 </Link>
               </li>
